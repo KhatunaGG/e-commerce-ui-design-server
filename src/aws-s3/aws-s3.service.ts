@@ -32,6 +32,11 @@ export class AwsS3Service {
   async uploadFile(filePath: string, file: Buffer) {
     try {
       if (!filePath || !file) throw new BadGatewayException('File is required');
+
+      if (!Buffer.isBuffer(file)) {
+        throw new BadRequestException('Invalid file type. Expected a Buffer.');
+      }
+
       const config = {
         Key: filePath,
         Bucket: this.bucketName,
@@ -77,7 +82,7 @@ export class AwsS3Service {
       if (!fileId) return;
       const config = {
         // Key: fileId,
-        Key: `sweeft/task/${fileId}`,
+        Key: `sweeft/task/${fileId}`, //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         Bucket: this.bucketName,
       };
       const deleteCommand = new DeleteObjectCommand(config);
@@ -88,34 +93,34 @@ export class AwsS3Service {
     }
   }
 
-  async uploadFiles(
-    files: { filePath: string; file: Buffer }[],
-  ): Promise<string[]> {
-    try {
-      if (!files || !Array.isArray(files) || files.length === 0) {
-        throw new BadGatewayException('Files are required');
-      }
-      const uploadedPaths: string[] = [];
-      for (const { filePath, file } of files) {
-        if (!filePath || !file) {
-          console.warn(`Skipping invalid file entry: ${filePath}`);
-          continue;
-        }
-        const config = {
-          Key: filePath,
-          Bucket: this.bucketName,
-          Body: file,
-        };
-        const uploadCommand = new PutObjectCommand(config);
-        await this.s3.send(uploadCommand);
-        uploadedPaths.push(filePath);
-      }
-      return uploadedPaths;
-    } catch (e) {
-      console.error('Error uploading files:', e);
-      throw new BadRequestException('Could not upload one or more files');
-    }
-  }
+  // async uploadFiles(
+  //   files: { filePath: string; file: Buffer }[],
+  // ): Promise<string[]> {
+  //   try {
+  //     if (!files || !Array.isArray(files) || files.length === 0) {
+  //       throw new BadGatewayException('Files are required');
+  //     }
+  //     const uploadedPaths: string[] = [];
+  //     for (const { filePath, file } of files) {
+  //       if (!filePath || !file) {
+  //         console.log(`Skipping invalid file entry: ${filePath}`);
+  //         continue;
+  //       }
+  //       const config = {
+  //         Key: filePath,
+  //         Bucket: this.bucketName,
+  //         Body: file,
+  //       };
+  //       const uploadCommand = new PutObjectCommand(config);
+  //       await this.s3.send(uploadCommand);
+  //       uploadedPaths.push(filePath);
+  //     }
+  //     return uploadedPaths;
+  //   } catch (e) {
+  //     console.error('Error uploading files:', e);
+  //     throw new BadRequestException('Could not upload one or more files');
+  //   }
+  // }
 
   async getPresignedUrl(filePath: string): Promise<string> {
     try {
@@ -123,11 +128,9 @@ export class AwsS3Service {
         Bucket: this.bucketName,
         Key: filePath,
       });
-
       const url = await getSignedUrl(this.s3, command, {
         expiresIn: 60 * 60,
       });
-
       return url;
     } catch (error) {
       console.error('Error generating presigned URL:', error);

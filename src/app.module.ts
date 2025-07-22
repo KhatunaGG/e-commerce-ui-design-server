@@ -5,6 +5,10 @@ import { UtilitiesModule } from './utilities/utilities.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AwsS3Module } from './aws-s3/aws-s3.module';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { ProductModule } from './product/product.module';
+import { PurchaseModule } from './purchase/purchase.module';
 
 @Module({
   imports: [
@@ -15,6 +19,14 @@ import { AwsS3Module } from './aws-s3/aws-s3.module';
     UtilitiesModule,
 
     AwsS3Module,
+
+    UserModule,
+
+    AuthModule,
+
+    ProductModule,
+
+    PurchaseModule,
 
   ],
   controllers: [AppController],

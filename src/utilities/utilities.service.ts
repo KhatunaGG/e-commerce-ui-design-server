@@ -1,14 +1,15 @@
 import { BadGatewayException, Injectable } from '@nestjs/common';
 import { CreateUtilityDto } from './dto/create-utility.dto';
-import { UpdateUtilityDto } from './dto/update-utility.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Utility } from './schema/utilities.schema.';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
+import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 
 @Injectable()
 export class UtilitiesService {
   constructor(
     @InjectModel(Utility.name) private utilUtilitiesService: Model<Utility>,
+    private s3Service: AwsS3Service,
   ) {}
 
   async create(createUtilityDto: CreateUtilityDto) {
@@ -25,23 +26,48 @@ export class UtilitiesService {
     }
   }
 
-  findAll() {
-    return `This action returns all utilities`;
+  async getUtilitiesByPage(query: string) {
+    try {
+      if (!query) return [];
+
+      const filtered = await this.utilUtilitiesService.find({ pages: query });
+
+      const filteredImages = await Promise.all(
+        filtered.map(async (imgDoc) => {
+          const img = imgDoc.toObject();
+          const url = await this.s3Service.getPresignedUrl(img.filePath);
+          return {
+            _id: img._id,
+            imageName: img.imageName,
+            filePath: img.filePath,
+            pages: img.pages,
+            componentUsage: img.componentUsage,
+            presignedUrl: url,
+            title: img.title ?? '',
+          };
+        }),
+      );
+
+      return filteredImages;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
   }
 
-  async findAllSorted() {
-    return this.utilUtilitiesService.find().sort({ createdAt: 1 }).exec();
-  }
+  // findAll() {
+  //   return `This action returns all utilities`;
+  // }
 
-  findOne(id: number) {
-    return `This action returns a #${id} utility`;
-  }
+  // findOne(id: number) {
+  //   return `This action returns a #${id} utility`;
+  // }
 
-  update(id: number, updateUtilityDto: UpdateUtilityDto) {
-    return `This action updates a #${id} utility`;
-  }
+  // update(id: number, updateUtilityDto: UpdateUtilityDto) {
+  //   return `This action updates a #${id} utility`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} utility`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} utility`;
+  // }
 }

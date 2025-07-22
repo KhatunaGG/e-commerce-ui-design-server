@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateUtilityDto {
   @IsString()
@@ -8,4 +14,21 @@ export class CreateUtilityDto {
   @IsString()
   @IsNotEmpty()
   filePath: string;
+
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  pages: string[];
+
+  @IsOptional()
+  @IsString()
+  components?: string;
+
+  @IsOptional()
+  @IsString()
+  id?: string;
+
+  @IsOptional()
+  @IsString()
+  title?: string;
 }

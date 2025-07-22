@@ -7,6 +7,19 @@ export class Utility {
 
   @Prop()
   filePath: string;
+
+  @Prop({ type: Array, default: [] })
+  pages: string[];
+
+  @Prop({ type: Array, default: [] })
+  componentUsage?: string[];
+
+
+  
+  @Prop({ type: String, required: false, default: "" })
+  title?: string;
+
+
 }
 
 export const UtilitySchema = SchemaFactory.createForClass(Utility);

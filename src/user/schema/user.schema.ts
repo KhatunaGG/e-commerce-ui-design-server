@@ -16,8 +16,13 @@ export class User {
   @Prop({ selected: false })
   password: string;
 
-  @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Order', default: [] }])
+  @Prop([
+    { type: mongoose.Schema.Types.ObjectId, ref: 'Purchase', default: [] },
+  ])
   orders: mongoose.Schema.Types.ObjectId[];
+
+  //   @Prop({ type: [Types.ObjectId], ref: 'Purchase', default: [] })
+  // orders: Types.ObjectId[];
 
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Review', default: [] }])
   reviews: mongoose.Schema.Types.ObjectId[];
@@ -34,6 +39,15 @@ export class User {
 
   @Prop()
   isTerms: boolean;
+
+  @Prop()
+  lastName: string;
+
+
+  @Prop({ type: String })
+  filePath: string;
+
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

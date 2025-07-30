@@ -37,5 +37,11 @@ export class CreateUserDto {
   @IsOptional()
   @IsArray()
   reviews?: Types.ObjectId[];
+
+
+
   
+  @IsOptional()
+  @IsString()
+  lastName?: string;
 }

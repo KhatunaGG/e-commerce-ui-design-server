@@ -8,12 +8,17 @@ import {
   Delete,
   UseGuards,
   Req,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 // import { UpdateAuthDto } from './dto/update-auth.dto';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { AuthGuard } from './guard/auth.guard';
+import { UpdateUserDto } from 'src/user/dto/update-user.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('auth')
 export class AuthController {
@@ -36,6 +41,43 @@ export class AuthController {
     return this.authService.getCurrentUser(req.userId);
   }
 
+  @Patch('update')
+  @UseGuards(AuthGuard)
+  updateUsersAccount(@Req() req, @Body() updateAuthDto: UpdateUserDto) {
+    return this.authService.updateUsersAccount(req.userId, updateAuthDto);
+  }
+
+  @Patch('upload-avatar')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadUsersAvatar(
+    @Req() req,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded');
+    }
+    const path = Math.random().toString().slice(2);
+    const filePath = `e-commerce-ui-design/${path}`;
+    return await this.authService.uploadImage(
+      filePath,
+      file.buffer,
+      req.userId,
+    );
+  }
+
+
+
+
+
+
+
+  @Get('get-image')
+  @UseGuards(AuthGuard)
+  async getUsersAvatar(@Req() req) {
+    return await this.authService.getUsersAvatar(req.userId)
+  }
+
   // @Get()
   // findAll() {
   //   return this.authService.findAll();
@@ -44,11 +86,6 @@ export class AuthController {
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.authService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-  //   return this.authService.update(+id, updateAuthDto);
   // }
 
   // @Delete(':id')

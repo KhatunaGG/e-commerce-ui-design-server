@@ -39,6 +39,10 @@ export class OrderItem {
 
   @Prop()
   orderCode: string;
+
+
+    @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
+  _id?: mongoose.Types.ObjectId;
 }
 
 export const OrderItemSchema = SchemaFactory.createForClass(OrderItem);

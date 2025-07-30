@@ -52,6 +52,7 @@ export class AwsS3Service {
   }
 
   async getImageById(fileId: string) {
+    console.log(fileId, 'FileId from getImageById');
     try {
       if (!fileId) throw new NotFoundException('Not found');
       const config = {
@@ -81,8 +82,8 @@ export class AwsS3Service {
     try {
       if (!fileId) return;
       const config = {
-        // Key: fileId,
-        Key: `sweeft/task/${fileId}`, //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        Key: fileId,
+        // Key: `e-commerce-ui-design/${fileId}`,
         Bucket: this.bucketName,
       };
       const deleteCommand = new DeleteObjectCommand(config);

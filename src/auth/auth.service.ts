@@ -1,21 +1,24 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-// import { UpdateAuthDto } from './dto/update-auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { SignInDto } from './dto/sign-in.dto';
 import { Types } from 'mongoose';
+import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
+import { toArray } from 'rxjs';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UserService,
     private jwtService: JwtService,
+    private awsS3Service: AwsS3Service,
   ) {}
 
   async signUp(createUserDto: CreateUserDto) {
@@ -36,7 +39,6 @@ export class AuthService {
   }
 
   async signIn(signInDto: SignInDto) {
-    console.log(signInDto, 'signInDto');
     try {
       const { userName, email, password, rememberMe } = signInDto;
       if (!password || (!userName && !email)) {
@@ -51,6 +53,9 @@ export class AuthService {
         existingUser = await this.usersService.findOne({ email });
       }
       if (!existingUser) throw new BadRequestException('Invalid credentials');
+      if (!existingUser) {
+        throw new BadRequestException('Invalid credentials');
+      }
       const isPasswordEqual = await bcrypt.compare(
         password,
         existingUser.password,
@@ -78,25 +83,175 @@ export class AuthService {
     }
     try {
       const currentUser = await this.usersService.getById(userId);
+      if (!currentUser) {
+        throw new UnauthorizedException('User not found');
+      }
       return currentUser;
     } catch (error) {
       console.log(error);
+      if (
+        error instanceof UnauthorizedException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      throw new UnauthorizedException('Failed to get current user');
     }
   }
 
-  // findAll() {
-  //   return `This action returns all auth`;
+  async findUserAndUpdate(id: Types.ObjectId | string, newPurchase) {
+    if (!id) {
+      throw new UnauthorizedException('User ID is required.');
+    }
+    try {
+      return await this.usersService.findUserAndUpdate(id, newPurchase);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+  async updateUsersAccount(userId: string, updateUserDto: any) {
+    if (!userId) throw new UnauthorizedException();
+    try {
+      const user = await this.usersService.getById(userId);
+
+      if (!user) throw new NotFoundException('User not found');
+      const { oldPassword, newPassword, confirmPassword, ...otherUpdates } =
+        updateUserDto;
+      const wantsToChangePassword =
+        oldPassword || newPassword || confirmPassword;
+
+      if (wantsToChangePassword) {
+        if (!oldPassword || !newPassword || !confirmPassword) {
+          throw new BadRequestException(
+            'All password fields are required to update password',
+          );
+        }
+
+        if (newPassword !== confirmPassword) {
+          throw new BadRequestException(
+            'New password and confirmation do not match',
+          );
+        }
+        const isOldPasswordValid = await bcrypt.compare(
+          oldPassword,
+          user.password,
+        );
+        if (!isOldPasswordValid) {
+          throw new BadRequestException('Old password is incorrect');
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        otherUpdates.password = hashedPassword;
+      }
+      delete otherUpdates.oldPassword;
+      delete otherUpdates.confirmPassword;
+      delete otherUpdates.newPassword;
+      const updatedUser = await this.usersService.updateUsersAccount(
+        userId,
+        otherUpdates,
+      );
+
+      return updatedUser;
+    } catch (e) {
+      console.error('Failed to update user account:', e);
+      throw e;
+    }
+  }
+
+  // async uploadImage(filePath: string, file: Buffer, userId: string) {
+  //   if (!userId) {
+  //     throw new UnauthorizedException('User ID is required');
+  //   }
+  //   const maxSize = 500 * 1024;
+  //   if (file.length > maxSize) {
+  //     throw new BadRequestException(
+  //       'Avatar file size should not exceed 500 KB',
+  //     );
+  //   }
+  //   try {
+  //     const filePathFromAws = await this.awsS3Service.uploadFile(
+  //       filePath,
+  //       file,
+  //     );
+  //     console.log(filePathFromAws, 'filePathFromAws');
+  //     const user = await this.usersService.uploadUsersAvatar(
+  //       userId,
+  //       filePathFromAws,
+  //     );
+  //     return user;
+  //   } catch (e) {
+  //     console.error('Upload error:', e);
+  //     throw e;
+  //   }
   // }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} auth`;
-  // }
+  async uploadImage(filePath: string, file: Buffer, userId: string) {
+    if (!userId) {
+      throw new UnauthorizedException('User ID is required');
+    }
+    const maxSize = 500 * 1024;
+    if (file.length > maxSize) {
+      throw new BadRequestException(
+        'Avatar file size should not exceed 500 KB',
+      );
+    }
+    try {
+      const existingUser = await this.usersService.findUserById(userId);
+      if (!existingUser) {
+        throw new NotFoundException('User not found');
+      }
+      const oldFilePath = existingUser.filePath;
+      const newPath = await this.awsS3Service.uploadFile(filePath, file);
+      const updatedUser = await this.usersService.uploadUsersAvatar(
+        userId,
+        newPath,
+      );
+      if (oldFilePath && oldFilePath !== newPath) {
+        try {
+          const removedOldPath =
+            await this.awsS3Service.deleteImageByFileId(oldFilePath);
+        } catch (deleteError) {
+          console.error('Error deleting old file (non-critical):', deleteError);
+        }
+      } else {
+        console.log('No old file to delete or same path');
+      }
+      return updatedUser;
+    } catch (e) {
+      console.error('Upload error:', e);
+      throw e;
+    }
+  }
 
-  // update(id: number, updateAuthDto: UpdateAuthDto) {
-  //   return `This action updates a #${id} auth`;
-  // }
+  async getUsersAvatar(userId) {
+    if (!userId) {
+      throw new UnauthorizedException('User ID is required');
+    }
+    try {
+      const user = await this.usersService.findUserById(userId);
+      if (!user) throw new NotFoundException('User not found');
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} auth`;
-  // }
+      if (!user.filePath) {
+        return { avatar: null };
+      }
+      const filePath = user.filePath;
+      try {
+        const image = await this.awsS3Service.getImageById(filePath);
+        // console.log('image-avatar:', image?.substring(0, 50));
+        return { avatar: image };
+      } catch (e) {
+        if (
+          e?.$metadata?.httpStatusCode === 404 ||
+          e instanceof NotFoundException
+        ) {
+          return { avatar: null };
+        }
+        throw e;
+      }
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
 }

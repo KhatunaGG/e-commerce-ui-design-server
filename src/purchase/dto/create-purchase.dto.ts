@@ -9,7 +9,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { PaymentMethod } from 'src/common/enums/payment.enum';
 
 export class OrderItemDto {
@@ -60,6 +60,10 @@ export class OrderItemDto {
   @IsString()
   @IsNotEmpty()
   orderCode: string;
+
+    @IsNotEmpty()
+  @IsString()
+  _id?: string | Types.ObjectId;
 }
 
 export class CreatePurchaseDto {

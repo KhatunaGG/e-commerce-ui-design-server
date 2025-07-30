@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadGatewayException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schema/user.schema';
@@ -15,12 +19,87 @@ export class UserService {
     return this.userModel.findById(id).select('+password');
   }
 
-  // findAll() {
-  //   return `This action returns all user`;
+  async findUserAndUpdate(id: Types.ObjectId | string, newPurchase) {
+    ///for update
+    try {
+      const updatedUser = await this.userModel.findByIdAndUpdate(
+        id,
+        { $push: { orders: newPurchase._id } },
+        { new: true },
+      );
+      return updatedUser;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  // async updateUsersAccount(userId, updateAuthDto) {
+  //   try {
+  //     const user = await this.userModel.findById(userId);
+
+  //     if (!user) {
+  //       throw new NotFoundException('User not found');
+  //     }
+  //     const updatedUser = await this.userModel
+  //       .findByIdAndUpdate(user._id, updateAuthDto, { new: true })
+  //       .select('-password');
+  //       console.log(updatedUser, "updatedUser from USER")
+
+  //     return updatedUser;
+  //   } catch (e) {
+  //     console.log(e);
+  //     throw e;
+  //   }
   // }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} user`;
+  async updateUsersAccount(userId, updateAuthDto) {
+    try {
+      const user = await this.userModel.findById(userId);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      const updatedUser = await this.userModel
+        .findByIdAndUpdate(user._id, updateAuthDto, { new: true })
+        .select('-password');
+      return updatedUser;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  findOne(query) {
+    return this.userModel.findOne(query);
+  }
+
+  async uploadUsersAvatar(userId, filePathFromAws) {
+    try {
+      const existingUser = await this.userModel.findById(userId);
+      if (!existingUser) throw new NotFoundException('User not found');
+      const updatedUser = await this.userModel.findByIdAndUpdate(
+        existingUser._id,
+        { filePath: filePathFromAws },
+        { new: true },
+      );
+      return updatedUser;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async findUserById(id: Types.ObjectId | string) {
+    try {
+      return await this.userModel.findById(id);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  // findAll() {
+  //   return `This action returns all user`;
   // }
 
   // update(id: number, updateUserDto: UpdateUserDto) {
@@ -30,8 +109,4 @@ export class UserService {
   // remove(id: number) {
   //   return `This action removes a #${id} user`;
   // }
-
-  findOne(query) {
-    return this.userModel.findOne(query);
-  }
 }

@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from 'src/common/enums/role.enum';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -17,7 +18,8 @@ export class AuthGuard implements CanActivate {
       if (!token) throw new UnauthorizedException();
       const payload = await this.jwtService.verifyAsync(token);
       req.userId = payload.sub;
-      req.role = payload.role;
+      // req.role = payload.role;
+      req.role = payload.role as Role;
 
       return true;
     } catch (error) {

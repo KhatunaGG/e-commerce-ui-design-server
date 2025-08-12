@@ -72,6 +72,11 @@ export class Purchase {
 
   @Prop({ type: [OrderItemSchema], default: [] })
   order: OrderItem[];
+
+
+  
+  @Prop()
+  orderCode: string;
 }
 
 export const PurchaseSchema = SchemaFactory.createForClass(Purchase);

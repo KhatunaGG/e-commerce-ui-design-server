@@ -6,10 +6,11 @@ import {
 import { UpdatePurchaseDto } from './dto/update-purchase.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { OrderItem, Purchase } from './schema/purchase.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { ProductService } from 'src/product/product.service';
 import { AuthService } from 'src/auth/auth.service';
 import { it } from 'node:test';
+import { QueryParamsDto } from './dto/query-params.dto';
 
 @Injectable()
 export class PurchaseService {
@@ -93,9 +94,48 @@ export class PurchaseService {
     }
   }
 
-  // findAll() {
-  //   return `This action returns all purchase`;
+  //  async findAll(userId: Types.ObjectId | string, role: string) {
+  //   if (!userId) throw new UnauthorizedException();
+  //   try {
+  //     if (role === 'admin') {
+  //       return await this.purchaseService.find();
+  //     } else {
+  //       return await this.purchaseService.find({ userId: userId });
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //     throw e;
+  //   }
   // }
+
+  async findAll(
+    userId: Types.ObjectId | string,
+    role: string,
+    queryParam: QueryParamsDto,
+  ) {
+    if (!userId) throw new UnauthorizedException();
+    try {
+      let { page, take } = queryParam;
+      const limitedTake = take > 100 ? 100 : take;
+      const query = role === 'admin' ? {} : { userId };
+      const ordersTotalLength =
+        await this.purchaseService.countDocuments(query);
+
+      const orders = await this.purchaseService
+        .find(query)
+        .skip((page - 1) * limitedTake)
+        .limit(limitedTake);
+      return {
+        page,
+        take,
+        ordersTotalLength,
+        orders,
+      };
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
 
   // findOne(id: number) {
   //   return `This action returns a #${id} purchase`;

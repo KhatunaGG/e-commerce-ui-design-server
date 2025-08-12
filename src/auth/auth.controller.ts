@@ -31,7 +31,6 @@ export class AuthController {
 
   @Post('sign-in')
   signIn(@Body() signInDto: SignInDto) {
-    console.log(signInDto, 'signInDto form controller');
     return this.authService.signIn(signInDto);
   }
 

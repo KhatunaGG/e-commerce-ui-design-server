@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Address {
@@ -22,6 +23,13 @@ export class Address {
 
   @Prop()
   type: string;
+
+  @Prop()
+  phoneNumber: string;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  addressOwnerId: mongoose.Schema.Types.ObjectId;
+
 }
 
 export const AddressSchema = SchemaFactory.createForClass(Address);

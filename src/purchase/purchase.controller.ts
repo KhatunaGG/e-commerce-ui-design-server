@@ -8,11 +8,13 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { PurchaseService } from './purchase.service';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
-import { UpdatePurchaseDto } from './dto/update-purchase.dto';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { query } from 'express';
+import { QueryParamsDto } from './dto/query-params.dto';
 
 @Controller('purchase')
 export class PurchaseController {
@@ -21,15 +23,32 @@ export class PurchaseController {
   @Post()
   @UseGuards(AuthGuard)
   create(@Req() req, @Body() createPurchaseDto: CreatePurchaseDto) {
-    console.log(createPurchaseDto, 'createPurchaseDto');
     return this.purchaseService.create(req.userId, req.role, createPurchaseDto);
+  }
+
+  @Get()
+  @UseGuards(AuthGuard)
+  findAll(@Req() req, @Query() queryParam: QueryParamsDto) {
+    return this.purchaseService.findAll(req.userId, req.role, queryParam);
   }
 
   // @Get()
   // @UseGuards(AuthGuard)
-  // findAll() {
-  //   return this.purchaseService.findAll();
+  // findAll(@Req() req) {
+  //   return this.purchaseService.findAll(req.userId, req.role);
   // }
+
+
+
+
+
+
+
+
+
+
+
+
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {

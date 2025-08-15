@@ -11,6 +11,7 @@ import { ProductModule } from './product/product.module';
 import { PurchaseModule } from './purchase/purchase.module';
 import { PaymentModule } from './payment/payment.module';
 import { AddressModule } from './address/address.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -33,6 +34,8 @@ import { AddressModule } from './address/address.module';
     PaymentModule,
 
     AddressModule,
+
+    ReviewModule,
 
   ],
   controllers: [AppController],

@@ -7,7 +7,10 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-class ReplyDto {
+export class ReplyDto {
+  @IsString()
+  productId: string;
+
   @IsString()
   replyToId: string;
 
@@ -15,19 +18,43 @@ class ReplyDto {
   replyOwnerId: string;
 
   @IsString()
-  replyText: string;
+  status: string;
+
+  @IsString()
+  text: string;
+
+  @IsOptional()
+  @IsString()
+  replyOwnerName?: string;
+
+  @IsOptional()
+  @IsString()
+  replyOwnerLastName?: string;
 }
 
-class QuestionDto {
-  @IsString()
-  questions: string;
-
-  @IsString()
-  questionsOwnerId: string;
+// export class AnswerDto {
+//   @IsString()
+//   answersOwnerId: string;
 
 //   @IsString()
-//   productId: string;
-}
+//   questionsOwnerId: string;
+
+//   @IsString()
+//   answerText: string;
+// }
+
+// export class QuestionDto {
+//   @IsString()
+//   questions: string;
+
+//   @IsString()
+//   questionsOwnerId: string;
+
+//   @IsArray()
+//   @ValidateNested({ each: true })
+//   @Type(() => AnswerDto)
+//   answers: AnswerDto[];
+// }
 
 export class CreateReviewDto {
   @IsOptional()
@@ -48,8 +75,14 @@ export class CreateReviewDto {
   @Type(() => ReplyDto)
   replies: ReplyDto[];
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => QuestionDto)
-  questions: QuestionDto[];
+  // @IsArray()
+  // @ValidateNested({ each: true })
+  // @Type(() => QuestionDto)
+  // questions: QuestionDto[];
+
+  @IsString()
+  reviewText: string;
+
+  @IsString()
+  productId: string;
 }

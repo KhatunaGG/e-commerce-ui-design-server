@@ -6,7 +6,8 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schema/user.schema';
-import { Model, Types } from 'mongoose';
+// import { Model, Types } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 
 @Injectable()
 export class UserService {
@@ -89,9 +90,27 @@ export class UserService {
     }
   }
 
+  async addReviewToUser(
+    userId: Types.ObjectId | string,
+    reviewId: Types.ObjectId,
+  ) {
+    try {
+      const user = await this.findUserById(userId);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      user.reviews.push(reviewId);
+      await user.save();
+      return user;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
   async findUserById(id: Types.ObjectId | string) {
     try {
-      return await this.userModel.findById(id);
+      return await this.userModel.findById(id).select('-password');
     } catch (e) {
       console.log(e);
       throw e;

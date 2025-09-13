@@ -1,31 +1,90 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
 
-@Schema({ timestamps: true })
-export class Questions {
-  @Prop()
-  questions: string;
+// ---------------------------------
+// ANSWERS SCHEMA
+// ---------------------------------
 
-  @Prop()
-  questionsOwnerId: string;
+// @Schema({ timestamps: true })
+// export class Answer {
+//   @Prop()
+//   answersOwnerId: string;
 
 //   @Prop()
-//   productId: string;
-}
+//   questionsOwnerId: string;
+
+//   @Prop()
+//   answerText: string;
+// }
+
+// export const AnswerSchema = SchemaFactory.createForClass(Answer);
+
+// ---------------------------------
+// QUESTIONS SCHEMA
+// ---------------------------------
+
+// @Schema({ timestamps: true })
+// export class Question {
+//   @Prop()
+//   questions: string;
+
+//   @Prop()
+//   questionsOwnerId: string;
+
+//   @Prop({ type: [AnswerSchema], default: [] })
+//   answers: Answer[];
+// }
+
+// export const QuestionSchema = SchemaFactory.createForClass(Question);
+
+// ---------------------------------
+// REPLY SCHEMA
+// ---------------------------------
 
 @Schema({ timestamps: true })
 export class Reply {
   @Prop()
-  replyToId: string;
+  productId: string;
 
   @Prop()
-  replyOwnerId: string;
+  replyToId?: string;
 
   @Prop()
-  replyText: string;
+  replyOwnerId?: string;
+
+  @Prop()
+  status: string;
+
+  @Prop()
+  text: string;
+
+
+
+
+
+
+@Prop()
+  replyOwnerName: string;
+
+  @Prop()
+  replyOwnerLastName: string;
+
 }
+
+export const ReplySchema = SchemaFactory.createForClass(Reply);
+
+// ---------------------------------
+// REVIEW SCHEMA
+// ---------------------------------
 
 @Schema({ timestamps: true })
 export class Review {
+  @Prop()
+  reviewText: string;
+
+  @Prop()
+  productId: string;
+
   @Prop()
   reviewOwnerId: string | null;
 
@@ -38,14 +97,11 @@ export class Review {
   @Prop()
   rating: number;
 
-  @Prop()
+  @Prop({ type: [ReplySchema], default: [] })
   replies: Reply[];
 
-  //   @Prop()
-  //   _id?: string;
-
-  @Prop()
-  questions: Questions[];
+  // @Prop({ type: [QuestionSchema], default: [] })
+  // questions: Question[];
 }
 
 export const ReviewSchema = SchemaFactory.createForClass(Review);

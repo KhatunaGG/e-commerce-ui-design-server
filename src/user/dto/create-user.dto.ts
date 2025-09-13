@@ -38,10 +38,20 @@ export class CreateUserDto {
   @IsArray()
   reviews?: Types.ObjectId[];
 
+  @IsOptional()
+  @IsString()
+  lastName?: string;
+
+
+
+
+
+
+
 
 
   
   @IsOptional()
-  @IsString()
-  lastName?: string;
+  @IsArray()
+  questions?: Types.ObjectId[];
 }

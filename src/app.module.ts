@@ -12,6 +12,7 @@ import { PurchaseModule } from './purchase/purchase.module';
 import { PaymentModule } from './payment/payment.module';
 import { AddressModule } from './address/address.module';
 import { ReviewModule } from './review/review.module';
+import { QuestionModule } from './question/question.module';
 
 @Module({
   imports: [
@@ -36,6 +37,8 @@ import { ReviewModule } from './review/review.module';
     AddressModule,
 
     ReviewModule,
+
+    QuestionModule,
 
   ],
   controllers: [AppController],

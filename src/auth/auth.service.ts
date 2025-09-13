@@ -110,6 +110,7 @@ export class AuthService {
       throw e;
     }
   }
+  
   async updateUsersAccount(userId: string, updateUserDto: any) {
     if (!userId) throw new UnauthorizedException();
     try {

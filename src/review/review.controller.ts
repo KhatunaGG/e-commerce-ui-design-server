@@ -8,14 +8,14 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateReviewDto, ReplyDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { QueryParamsDto } from 'src/purchase/dto/query-params.dto';
 
 @Controller('review')
-// @UseGuards(AuthGuard)
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
@@ -26,11 +26,10 @@ export class ReviewController {
   }
 
   @Get()
-  findAll() {
-    return this.reviewService.findAll();
+  findAll(@Query() queryParam: QueryParamsDto) {
+    return this.reviewService.findAll(queryParam);
   }
 
-  // @Patch(':id/update-reply')
   @Patch('update-reply/:id')
   @UseGuards(AuthGuard)
   updateReplayWithReview(
@@ -49,5 +48,44 @@ export class ReviewController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.reviewService.remove(+id);
+  }
+
+  @Patch('/update-rate/:reviewId')
+  @UseGuards(AuthGuard)
+  updateRate(
+    @Req() req,
+    @Param('reviewId') reviewId: string,
+    @Body() { rating }: { rating: number },
+  ) {
+    return this.reviewService.updateReviewRating(req.userId, reviewId, rating);
+  }
+
+  @Patch('/update-reply-rate')
+  @UseGuards(AuthGuard)
+  updateReplyRate(
+    @Req() req,
+    @Query('reviewId') reviewId: string,
+    @Query('replyId') replyId: string,
+    @Query('productId') productId: string,
+    @Body() { rating }: { rating: number },
+  ) {
+    return this.reviewService.updateReplyRate(
+      req.userId,
+      reviewId,
+      replyId,
+      rating,
+    );
+  }
+
+  @Get('average-rating/:productId')
+  async getAverageRating(@Param('productId') productId: string) {
+    const averageRating = await this.reviewService.getAverageRating(productId);
+    return { averageRating };
+  }
+
+  @Patch('/:id/like')
+  @UseGuards(AuthGuard)
+  async updateReviewsLikes(@Req() req, @Param('id') reviewId: string) {
+    return await this.reviewService.updateReviewsLikes(req.userId, reviewId);
   }
 }

@@ -110,11 +110,12 @@ export class AuthService {
       throw e;
     }
   }
-  
+
   async updateUsersAccount(userId: string, updateUserDto: any) {
     if (!userId) throw new UnauthorizedException();
     try {
-      const user = await this.usersService.getById(userId);
+      // const user = await this.usersService.getById(userId);
+      const user = await this.usersService.findUserById(userId);
 
       if (!user) throw new NotFoundException('User not found');
       const { oldPassword, newPassword, confirmPassword, ...otherUpdates } =

@@ -7,6 +7,23 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
+
+export class LikeDto {
+  @IsString()
+  likedById: string;
+
+  @IsNumber()
+  like: number;
+}
+
+export class RateDto {
+  @IsString()
+  ratedById: string;
+
+  @IsNumber()
+  rating: number;
+}
+
 export class ReplyDto {
   @IsString()
   productId: string;
@@ -30,39 +47,24 @@ export class ReplyDto {
   @IsOptional()
   @IsString()
   replyOwnerLastName?: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => RateDto)
+  ratedBy: RateDto[];
+
+  @IsOptional()
+  @IsString()
+  _id?: string;
 }
-
-// export class AnswerDto {
-//   @IsString()
-//   answersOwnerId: string;
-
-//   @IsString()
-//   questionsOwnerId: string;
-
-//   @IsString()
-//   answerText: string;
-// }
-
-// export class QuestionDto {
-//   @IsString()
-//   questions: string;
-
-//   @IsString()
-//   questionsOwnerId: string;
-
-//   @IsArray()
-//   @ValidateNested({ each: true })
-//   @Type(() => AnswerDto)
-//   answers: AnswerDto[];
-// }
 
 export class CreateReviewDto {
   @IsOptional()
   @IsString()
   reviewOwnerId: string;
 
-  @IsNumber()
-  likes: number;
+  // @IsNumber()
+  // likes: number;
 
   @IsString()
   status: string;
@@ -75,14 +77,21 @@ export class CreateReviewDto {
   @Type(() => ReplyDto)
   replies: ReplyDto[];
 
-  // @IsArray()
-  // @ValidateNested({ each: true })
-  // @Type(() => QuestionDto)
-  // questions: QuestionDto[];
-
   @IsString()
   reviewText: string;
 
   @IsString()
   productId: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => RateDto)
+  ratedBy: RateDto[];
+
+
+
+  @IsArray()
+@ValidateNested({ each: true })
+@Type(() => LikeDto)
+likes: LikeDto[];
 }

@@ -1,20 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  Query,
+} from '@nestjs/common';
 import { QuestionService } from './question.service';
-import { CreateQuestionDto } from './dto/create-question.dto';
+import { AnswerDto, CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { QueryParamsDto } from 'src/purchase/dto/query-params.dto';
 
 @Controller('question')
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
   @Post()
-  create(@Body() createQuestionDto: CreateQuestionDto) {
-    return this.questionService.create(createQuestionDto);
+  @UseGuards(AuthGuard)
+  create(@Req() req, @Body() createQuestionDto: CreateQuestionDto) {
+    return this.questionService.create(req.userId, createQuestionDto);
   }
 
   @Get()
-  findAll() {
-    return this.questionService.findAll();
+  findAll(@Query() queryParam: QueryParamsDto) {
+    return this.questionService.findAll(queryParam);
   }
 
   @Get(':id')
@@ -23,8 +37,13 @@ export class QuestionController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateQuestionDto: UpdateQuestionDto) {
-    return this.questionService.update(+id, updateQuestionDto);
+  @UseGuards(AuthGuard)
+  update(
+    @Req() req,
+    @Param('id') id: string,
+    @Body() updateQuestionDto: AnswerDto,
+  ) {
+    return this.questionService.update(req.userId, id, updateQuestionDto);
   }
 
   @Delete(':id')

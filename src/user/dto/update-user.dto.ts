@@ -42,7 +42,12 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 
 
   
-  @IsNotEmpty()
+  // @IsNotEmpty()
+  // @IsString()
+  // filePath: string;
+
+   @IsOptional()
   @IsString()
-  filePath: string;
+  filePath?: string;
+
 }

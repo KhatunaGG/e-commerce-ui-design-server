@@ -1,23 +1,40 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 export class AnswerDto {
   @IsString()
   answersOwnerId: string;
 
-  @IsString()
-  questionsOwnerId: string;
+  // @IsString()
+  // answerToQuestionsOwnerId: string;
 
   @IsString()
   answerText: string;
 
   @IsString()
   status: string;
+
+
+
+
+
+
+
+
+
+
+  @IsOptional()
+  @IsString()
+  answerOwnerLastName?: string;
+
+  @IsOptional()
+  @IsString()
+  answerOwnerName?: string;
 }
 
 export class CreateQuestionDto {
   @IsString()
-  questions: string;
+  question: string;
 
   @IsString()
   questionsOwnerId: string;

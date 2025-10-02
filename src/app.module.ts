@@ -13,6 +13,7 @@ import { PaymentModule } from './payment/payment.module';
 import { AddressModule } from './address/address.module';
 import { ReviewModule } from './review/review.module';
 import { QuestionModule } from './question/question.module';
+import { BlogModule } from './blog/blog.module';
 
 @Module({
   imports: [
@@ -39,6 +40,8 @@ import { QuestionModule } from './question/question.module';
     ReviewModule,
 
     QuestionModule,
+
+    BlogModule,
 
   ],
   controllers: [AppController],

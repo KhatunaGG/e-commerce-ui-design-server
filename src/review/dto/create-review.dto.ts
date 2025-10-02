@@ -7,7 +7,6 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-
 export class LikeDto {
   @IsString()
   likedById: string;
@@ -88,10 +87,8 @@ export class CreateReviewDto {
   @Type(() => RateDto)
   ratedBy: RateDto[];
 
-
-
   @IsArray()
-@ValidateNested({ each: true })
-@Type(() => LikeDto)
-likes: LikeDto[];
+  @ValidateNested({ each: true })
+  @Type(() => LikeDto)
+  likes: LikeDto[];
 }

@@ -12,7 +12,6 @@ import { Model, Types } from 'mongoose';
 @Injectable()
 export class AddressService {
   constructor(
-    // @InjectModel(Address.name) private addressService: Model<Address>,
     @InjectModel(Address.name) private readonly addressModel: Model<Address>,
   ) {}
 
@@ -71,8 +70,6 @@ export class AddressService {
 
   async findAll(userId: Types.ObjectId | string, isAdmin) {
     if (!userId) throw new UnauthorizedException();
-    // console.log(isAdmin, 'isAdmin');
-    // console.log(userId, 'userId');
     try {
       let allAddresses;
       if (isAdmin) {
@@ -90,7 +87,6 @@ export class AddressService {
 
   async update(userId: string, id: string, updateAddressDto: UpdateAddressDto) {
     if (!userId) throw new UnauthorizedException();
-
     try {
       const updated = await this.addressModel.findOneAndUpdate(
         {

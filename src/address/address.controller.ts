@@ -23,7 +23,6 @@ export class AddressController {
   @Post('create-address')
   @UseGuards(AuthGuard)
   create(@Req() req, @Body() createAddressDto: CreateAddressDto) {
-    console.log(createAddressDto, 'createAddressDto');
     return this.addressService.create(req.userId, createAddressDto);
   }
 
@@ -41,9 +40,6 @@ export class AddressController {
     @Param('id') id: string,
     @Body() updateAddressDto: UpdateAddressDto,
   ) {
-        console.log(req.userId, "userId")
-    console.log(id, "id")
-    console.log(updateAddressDto, "updateAddressDto")
     return this.addressService.update(req.userId, id, updateAddressDto);
   }
 

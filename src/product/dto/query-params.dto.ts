@@ -18,7 +18,6 @@ export class QueryParamsDto {
   @IsOptional()
   priceRange?: string;
 
-
   @IsOptional()
-    sortBy?: 'latest' | 'oldest' | 'a-z' | 'z-a' | 'highest' | 'lowest';
+  sortBy?: 'latest' | 'oldest' | 'a-z' | 'z-a' | 'highest' | 'lowest';
 }

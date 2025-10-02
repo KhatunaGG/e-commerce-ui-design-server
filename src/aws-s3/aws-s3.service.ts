@@ -52,7 +52,6 @@ export class AwsS3Service {
   }
 
   async getImageById(fileId: string) {
-    console.log(fileId, 'FileId from getImageById');
     try {
       if (!fileId) throw new NotFoundException('Not found');
       const config = {
@@ -94,6 +93,24 @@ export class AwsS3Service {
     }
   }
 
+  async getPresignedUrl(filePath: string): Promise<string> {
+    try {
+      const command = new GetObjectCommand({
+        Bucket: this.bucketName,
+        Key: filePath,
+      });
+      const url = await getSignedUrl(this.s3, command, {
+        expiresIn: 60 * 60,
+      });
+      return url;
+    } catch (error) {
+      console.error('Error generating presigned URL:', error);
+      throw new BadGatewayException('Could not generate presigned URL');
+    }
+  }
+
+
+  
   // async uploadFiles(
   //   files: { filePath: string; file: Buffer }[],
   // ): Promise<string[]> {
@@ -123,19 +140,4 @@ export class AwsS3Service {
   //   }
   // }
 
-  async getPresignedUrl(filePath: string): Promise<string> {
-    try {
-      const command = new GetObjectCommand({
-        Bucket: this.bucketName,
-        Key: filePath,
-      });
-      const url = await getSignedUrl(this.s3, command, {
-        expiresIn: 60 * 60,
-      });
-      return url;
-    } catch (error) {
-      console.error('Error generating presigned URL:', error);
-      throw new BadGatewayException('Could not generate presigned URL');
-    }
-  }
 }

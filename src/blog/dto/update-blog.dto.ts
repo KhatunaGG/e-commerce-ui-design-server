@@ -1,4 +1,22 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateBlogDto } from './create-blog.dto';
+// import { PartialType } from '@nestjs/mapped-types';
+// import { CreateBlogDto } from './create-blog.dto';
 
-export class UpdateBlogDto extends PartialType(CreateBlogDto) {}
+
+
+
+import { IsArray, IsOptional, IsString } from "class-validator";
+
+export class UpdateBlogDto {
+  @IsOptional()
+  @IsString()
+  articleTitle?: string;
+
+  @IsOptional()
+  @IsString()
+  context?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  filePath?: string[];
+}

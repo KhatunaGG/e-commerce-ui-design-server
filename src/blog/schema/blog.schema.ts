@@ -41,3 +41,16 @@ export class Blog {
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);
+
+
+// export type BlogDocument = Blog & Document & {
+//   createdAt: Date;
+//   updatedAt: Date;
+// };
+
+// export type BlogLean = Blog & {
+//   _id: Types.ObjectId;
+//   createdAt: Date;
+//   updatedAt: Date;
+//   __v: number;
+// };

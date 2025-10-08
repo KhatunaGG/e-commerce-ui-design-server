@@ -12,11 +12,12 @@ import {
   UploadedFile,
   BadRequestException,
   Query,
+  UploadedFiles,
 } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { QueryParamsDto } from 'src/product/dto/query-params.dto';
 
@@ -31,7 +32,6 @@ export class BlogController {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
-    // console.log(file, "file from controller")
     const path = Math.random().toString().slice(2);
     const filePath = `e-commerce-ui-design/${path}`;
     return this.blogService.uploadImage(req.userId, filePath, file.buffer);
@@ -44,22 +44,79 @@ export class BlogController {
   }
 
   @Get()
-  findAll(@Query() queryParam: QueryParamsDto) {
+  findAll(@Query() queryParam: { page: string; take: string; sort: String }) {
     return this.blogService.findAll(queryParam);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.blogService.findOne(+id);
+  // @Post('upload-many')
+  // @UseGuards(AuthGuard)
+  // @UseInterceptors(FilesInterceptor('files'))
+  // async uploadMany(@UploadedFiles() files: Express.Multer.File[], @Req() req) {
+  //   const path = Math.random().toString().slice(2);
+  //   const fileForUpload = files.map((file, index) => ({
+  //     filePath: `e-commerce-ui-design/${path}`,
+  //     file: file.buffer,
+  //   }));
+
+  //   const uploadedPaths = await this.blogService.uploadManyFiles(
+  //     req.userId,
+  //     fileForUpload,
+  //   );
+  //   return {
+  //     message: 'Files uploaded successfully',
+  //     uploadedPaths,
+  //   };
+  // }
+
+  @Post('upload-many')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FilesInterceptor('files'))
+  async uploadMany(@UploadedFiles() files: Express.Multer.File[], @Req() req) {
+    const fileForUpload = files.map((file, index) => ({
+      filePath: `e-commerce-ui-design/${Math.random().toString().slice(2)}`,
+      file: file.buffer,
+    }));
+
+    const uploadedPaths = await this.blogService.uploadManyFiles(
+      req.userId,
+      fileForUpload,
+    );
+    return {
+      message: 'Files uploaded successfully',
+      uploadedPaths,
+    };
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
-    return this.blogService.update(+id, updateBlogDto);
+  @Patch('/:blogId/add-article')
+  @UseGuards(AuthGuard)
+  update(
+    @Req() req,
+    @Param('blogId') blogId: string,
+    @Body() updateBlogDto: UpdateBlogDto,
+  ) {
+    return this.blogService.update(req.userId, blogId, updateBlogDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.blogService.remove(+id);
+
+  @Get('/get-for-articles')
+  fetchForArticle() {
+    return this.blogService.fetchForArticle();
   }
+
+// @Get('/get-for-articles')
+// fetchForArticle(@Query('excludeBlogId') excludeBlogId?: string) {
+//   return this.blogService.fetchForArticle(excludeBlogId);
+// }
+
+
+
+
+
+
+  @Get(':blogId')
+  getBlogById(@Param('blogId') blogId: string) {
+    return this.blogService.getBlogById(blogId);
+  }
+
+
 }

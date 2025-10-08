@@ -32,11 +32,9 @@ export class AwsS3Service {
   async uploadFile(filePath: string, file: Buffer) {
     try {
       if (!filePath || !file) throw new BadGatewayException('File is required');
-
       if (!Buffer.isBuffer(file)) {
         throw new BadRequestException('Invalid file type. Expected a Buffer.');
       }
-
       const config = {
         Key: filePath,
         Bucket: this.bucketName,
@@ -50,6 +48,36 @@ export class AwsS3Service {
       throw new BadRequestException('Could not upload file');
     }
   }
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   async getImageById(fileId: string) {
     try {

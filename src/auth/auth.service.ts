@@ -12,6 +12,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { Types } from 'mongoose';
 import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 import { toArray } from 'rxjs';
+import { EmailSenderService } from 'src/email-sender/email-sender.service';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +20,7 @@ export class AuthService {
     private readonly usersService: UserService,
     private jwtService: JwtService,
     private awsS3Service: AwsS3Service,
+    private readonly emailService: EmailSenderService,
   ) {}
 
   async signUp(createUserDto: CreateUserDto) {
@@ -161,33 +163,6 @@ export class AuthService {
     }
   }
 
-  // async uploadImage(filePath: string, file: Buffer, userId: string) {
-  //   if (!userId) {
-  //     throw new UnauthorizedException('User ID is required');
-  //   }
-  //   const maxSize = 500 * 1024;
-  //   if (file.length > maxSize) {
-  //     throw new BadRequestException(
-  //       'Avatar file size should not exceed 500 KB',
-  //     );
-  //   }
-  //   try {
-  //     const filePathFromAws = await this.awsS3Service.uploadFile(
-  //       filePath,
-  //       file,
-  //     );
-  //     console.log(filePathFromAws, 'filePathFromAws');
-  //     const user = await this.usersService.uploadUsersAvatar(
-  //       userId,
-  //       filePathFromAws,
-  //     );
-  //     return user;
-  //   } catch (e) {
-  //     console.error('Upload error:', e);
-  //     throw e;
-  //   }
-  // }
-
   async uploadImage(filePath: string, file: Buffer, userId: string) {
     if (!userId) {
       throw new UnauthorizedException('User ID is required');
@@ -251,6 +226,28 @@ export class AuthService {
         }
         throw e;
       }
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async sendContactEmail(
+    userId: Types.ObjectId | string,
+    fullName: string,
+    yourEmail: string,
+    message: string,
+  ) {
+    if (!userId) {
+      throw new UnauthorizedException('User ID is required');
+    }
+    try {
+
+      if (!fullName || !yourEmail || !message) {
+        throw new BadRequestException('Missing required fields');
+      }
+      const mailSender =await this.usersService.findUserById(userId)
+      return await this.emailService.sendEmail( yourEmail, message, mailSender.yourName, mailSender.lastName, mailSender.email );
     } catch (e) {
       console.log(e);
       throw e;

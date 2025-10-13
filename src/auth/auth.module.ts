@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from 'src/user/user.module';
 import { AwsS3Module } from 'src/aws-s3/aws-s3.module';
+import { EmailSenderModule } from 'src/email-sender/email-sender.module';
 
 @Module({
   imports: [
@@ -16,6 +17,11 @@ import { AwsS3Module } from 'src/aws-s3/aws-s3.module';
     }),
     UserModule,
     AwsS3Module,
+
+
+
+    
+    EmailSenderModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],

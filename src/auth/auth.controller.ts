@@ -19,6 +19,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { AuthGuard } from './guard/auth.guard';
 import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { retry } from 'rxjs';
 
 @Controller('auth')
 export class AuthController {
@@ -65,16 +66,25 @@ export class AuthController {
     );
   }
 
-
-
-
-
-
-
   @Get('get-image')
   @UseGuards(AuthGuard)
   async getUsersAvatar(@Req() req) {
-    return await this.authService.getUsersAvatar(req.userId)
+    return await this.authService.getUsersAvatar(req.userId);
+  }
+
+  @Post('contact')
+  @UseGuards(AuthGuard)
+  async sendContactEmail(
+    @Req() req,
+    @Body() body: { fullName: string; yourEmail: string; message: string },
+  ) {
+    const { fullName, yourEmail, message } = body;
+    return await this.authService.sendContactEmail(
+      req.userId,
+      fullName,
+      yourEmail,
+      message,
+    );
   }
 
   // @Get()

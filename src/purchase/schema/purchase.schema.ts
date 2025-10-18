@@ -40,8 +40,7 @@ export class OrderItem {
   @Prop()
   orderCode: string;
 
-
-    @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
   _id?: mongoose.Types.ObjectId;
 }
 
@@ -73,8 +72,6 @@ export class Purchase {
   @Prop({ type: [OrderItemSchema], default: [] })
   order: OrderItem[];
 
-
-  
   @Prop()
   orderCode: string;
 }

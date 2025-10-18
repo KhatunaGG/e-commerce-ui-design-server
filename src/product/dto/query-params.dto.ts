@@ -4,12 +4,10 @@ import { IsNumber, IsOptional } from 'class-validator';
 export class QueryParamsDto {
   @Transform(({ value }) => Number(value))
   @IsNumber()
-  // page: number = 1;
   page: number;
 
   @Transform(({ value }) => Number(value))
   @IsNumber()
-  // take: number = 12;
   take: number;
 
   @IsOptional()

@@ -61,7 +61,7 @@ export class OrderItemDto {
   @IsNotEmpty()
   orderCode: string;
 
-    @IsNotEmpty()
+  @IsNotEmpty()
   @IsString()
   _id?: string | Types.ObjectId;
 }

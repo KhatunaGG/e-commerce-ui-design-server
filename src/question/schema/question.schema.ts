@@ -3,14 +3,8 @@ import mongoose, { Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Answer {
-  // @Prop()
-  // answersOwnerId: string;
-
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   answersOwnerId: Types.ObjectId;
-
-  // @Prop()
-  // answerToQuestionsOwnerId: string;
 
   @Prop()
   answerText: string;
@@ -44,15 +38,9 @@ export class Question {
   @Prop()
   status: string;
 
-
-
-
-
-
-  
   @Prop()
   questionOwnerName: string;
-@Prop()
+  @Prop()
   questionOwnerLastName: string;
 }
 

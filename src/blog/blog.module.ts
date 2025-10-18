@@ -10,7 +10,7 @@ import { UserModule } from 'src/user/user.module';
   imports: [
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     AwsS3Module,
-     UserModule,
+    UserModule,
   ],
   controllers: [BlogController],
   providers: [BlogService],

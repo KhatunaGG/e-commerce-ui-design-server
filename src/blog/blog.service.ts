@@ -12,9 +12,6 @@ import { Model, Types } from 'mongoose';
 import { Blog } from './schema/blog.schema';
 import { UserService } from 'src/user/user.service';
 import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
-import { Type } from '@aws-sdk/client-s3';
-import { error } from 'console';
-// import { QueryParamsDto } from './dto/query-params.dto';
 
 @Injectable()
 export class BlogService {
@@ -72,7 +69,6 @@ export class BlogService {
       const totalCount = await this.blogService.countDocuments();
       const blogs = await this.blogService
         .find()
-        // .sort({ createdAt: sortBy === 'oldest' ? 1 : -1 })
         .sort({ createdAt: sort === 'asc' ? 1 : -1 })
         .skip((Number(page) - 1) * limitedTake)
         .limit(limitedTake)
@@ -124,9 +120,6 @@ export class BlogService {
       throw e;
     }
   }
-
-
-
 
   async uploadManyFiles(
     userId: string,
@@ -234,15 +227,10 @@ export class BlogService {
           articles: articlesWithPresignedUrls,
         };
       }
-
       return blog;
     } catch (e) {
       console.log(e);
       throw e;
     }
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} blog`;
   }
 }

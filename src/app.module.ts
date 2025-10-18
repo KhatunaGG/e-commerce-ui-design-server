@@ -22,21 +22,18 @@ import { join } from 'path';
 
 @Module({
   imports: [
-    // ConfigModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(process.env.MONGO_URI),
     MailerModule.forRoot({
       transport: {
         host: process.env.SMTP_HOST,
         port: 465,
-        secure: true, 
+        secure: true,
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
         },
       },
-
-
 
       defaults: {
         from: '"No Reply" <no-reply@yourdomain.com>',
@@ -49,31 +46,18 @@ import { join } from 'path';
         },
       },
     }),
-
     EmailSenderModule,
-
     UtilitiesModule,
-
     AwsS3Module,
-
     UserModule,
-
     AuthModule,
-
     ProductModule,
-
     PurchaseModule,
-
     PaymentModule,
-
     AddressModule,
-
     ReviewModule,
-
     QuestionModule,
-
     BlogModule,
-
     EmailSenderModule,
   ],
   controllers: [AppController],

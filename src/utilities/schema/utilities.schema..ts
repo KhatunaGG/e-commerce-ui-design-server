@@ -14,12 +14,8 @@ export class Utility {
   @Prop({ type: Array, default: [] })
   componentUsage?: string[];
 
-
-  
-  @Prop({ type: String, required: false, default: "" })
+  @Prop({ type: String, required: false, default: '' })
   title?: string;
-
-
 }
 
 export const UtilitySchema = SchemaFactory.createForClass(Utility);

@@ -45,7 +45,6 @@ export class CreateProductDto {
   @IsArray()
   questions?: string[];
 
-
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
@@ -71,7 +70,6 @@ export class CreateProductDto {
 
   @IsString()
   details: string;
-
 
   @IsOptional()
   @IsDateString(

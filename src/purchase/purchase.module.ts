@@ -14,7 +14,7 @@ import { AuthModule } from 'src/auth/auth.module';
     ]),
     AwsS3Module,
     ProductModule,
-    AuthModule
+    AuthModule,
   ],
   controllers: [PurchaseController],
   providers: [PurchaseService],

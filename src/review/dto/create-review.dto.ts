@@ -62,9 +62,6 @@ export class CreateReviewDto {
   @IsString()
   reviewOwnerId: string;
 
-  // @IsNumber()
-  // likes: number;
-
   @IsString()
   status: string;
 

@@ -42,15 +42,6 @@ export class CreateUserDto {
   @IsString()
   lastName?: string;
 
-
-
-
-
-
-
-
-
-  
   @IsOptional()
   @IsArray()
   questions?: Types.ObjectId[];

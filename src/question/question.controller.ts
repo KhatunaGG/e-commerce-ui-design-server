@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { AnswerDto, CreateQuestionDto } from './dto/create-question.dto';
-import { UpdateQuestionDto } from './dto/update-question.dto';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { QueryParamsDto } from 'src/purchase/dto/query-params.dto';
 
@@ -31,11 +30,6 @@ export class QuestionController {
     return this.questionService.findAll(queryParam);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.questionService.findOne(+id);
-  }
-
   @Patch(':id')
   @UseGuards(AuthGuard)
   update(
@@ -44,10 +38,5 @@ export class QuestionController {
     @Body() updateQuestionDto: AnswerDto,
   ) {
     return this.questionService.update(req.userId, id, updateQuestionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.questionService.remove(+id);
   }
 }

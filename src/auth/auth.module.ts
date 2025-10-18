@@ -13,14 +13,9 @@ import { EmailSenderModule } from 'src/email-sender/email-sender.module';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      // signOptions: { expiresIn: '1h' },
     }),
     UserModule,
     AwsS3Module,
-
-
-
-    
     EmailSenderModule,
   ],
   controllers: [AuthController],

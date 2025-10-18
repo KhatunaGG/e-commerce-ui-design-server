@@ -10,40 +10,12 @@ import { Model, Types } from 'mongoose';
 import { UserService } from 'src/user/user.service';
 import { QueryParamsDto } from 'src/purchase/dto/query-params.dto';
 
-
 @Injectable()
 export class QuestionService {
   constructor(
     @InjectModel(Question.name) private questionService: Model<Question>,
     private readonly userService: UserService,
   ) {}
-
-  // async create(
-  //   userId: Types.ObjectId | string,
-  //   createQuestionDto: CreateQuestionDto,
-  // ) {
-  //   if (!userId)
-  //     throw new UnauthorizedException('Please, sign in to write a review');
-  //   if (!createQuestionDto) throw new BadGatewayException('NOt a valid data');
-  //   try {
-
-  //     const newCreateQuestionDto = {
-  //       ...createQuestionDto,
-  //       questionOwnerId: userId,
-
-  //       questionOwnerName:
-  //     };
-  //     const question = await this.questionService.create(newCreateQuestionDto);
-  //     // if (question && question._id) {
-  //     //   await this.userService.addQuestionToUser(userId, question._id);
-  //     // }
-
-  //     return question;
-  //   } catch (e) {
-  //     console.log(e);
-  //     throw e;
-  //   }
-  // }
 
   async create(
     userId: Types.ObjectId | string,
@@ -68,29 +40,6 @@ export class QuestionService {
       throw e;
     }
   }
-
-  // async findAll(queryParam: QueryParamsDto) {
-  //   try {
-  //     const { page, take, countOnly, productId } = queryParam;
-  //     const limitedTake = take > 100 ? 100 : take;
-  //     const filter = productId ? { productId } : {};
-  //     const total = await this.questionService.countDocuments(filter);
-  //     if (countOnly) {
-  //       return { questionsTotalLength: total };
-  //     }
-  //     const questions = await this.questionService
-  //       .find(filter)
-  //       .skip((page - 1) * limitedTake)
-  //       .limit(limitedTake);
-
-  //     return {
-  //       allQuestions: questions,
-  //       questionsTotalLength: total,
-  //     };
-  //   } catch (e) {
-  //     throw e;
-  //   }
-  // }
 
   async findAll(queryParam: QueryParamsDto) {
     try {
@@ -145,13 +94,5 @@ export class QuestionService {
       console.log(e);
       throw e;
     }
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} question`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} question`;
   }
 }

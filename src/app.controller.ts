@@ -34,6 +34,4 @@ export class AppController {
     const filepath = `e-commerce-ui-design/${path}`;
     return this.appService.uploadImage(filepath, file.buffer);
   }
-
-
 }

@@ -73,7 +73,6 @@ export class ProductService {
   async findAllWishList(queryParams: QueryParamsDto) {
     try {
       const { take = 6, page = 1 } = queryParams;
-
       if (page <= 0 || take <= 0 || take > 100) {
         throw new BadRequestException('Invalid pagination parameters');
       }
@@ -170,235 +169,115 @@ export class ProductService {
     return updatedProduct;
   }
 
-  // async findAllByQueryParams(queryParams: QueryParamsDto) {
-  //   const query: any = {};
-  //   let sort: Record<string, 1 | -1> = {};
-  //   const sortValue = queryParams.sortBy?.toLowerCase();
+  async findAllByQueryParams(queryParams: QueryParamsDto) {
+    const query: any = {};
+    let sort: Record<string, 1 | -1> = {};
+    const sortValue = queryParams.sortBy?.toLowerCase();
 
-  //   switch (sortValue) {
-  //     case 'latest':
-  //       sort = { createdAt: -1 };
-  //       break;
-  //     case 'oldest':
-  //       sort = { createdAt: 1 };
-  //       break;
-  //     case 'a to z':
-  //     case 'a-z':
-  //       sort = { productName: 1 };
-  //       break;
-  //     case 'z to a':
-  //     case 'z-a':
-  //       sort = { productName: -1 };
-  //       break;
-  //     case 'highest':
-  //       sort = { price: -1 };
-  //       break;
-  //     case 'lowest':
-  //       sort = { price: 1 };
-  //       break;
-  //     default:
-  //       break;
-  //   }
-
-  //   if (queryParams.category) {
-  //     query.category = { $in: [queryParams.category.toLowerCase()] };
-  //   }
-
-  //   if (queryParams.priceRange) {
-  //     const [min, max] = queryParams.priceRange.split('-').map(Number);
-  //     if (max) {
-  //       query.price = { $gte: min, $lte: max };
-  //     } else {
-  //       query.price = { $gte: min };
-  //     }
-  //   }
-
-  //   try {
-  //     const { take = 12, page = 1 } = queryParams;
-  //     if (page <= 0 || take <= 0 || take >= 100) {
-  //       throw new BadRequestException('Invalid pagination parameters');
-  //     }
-
-  //     const skip = (page - 1) * take;
-  //     const allProducts = await this.productService.find();
-  //     const allFilteredProducts = await this.productService.find(query);
-
-  //     let productsQuery = this.productService.find(query);
-
-  //     if (Object.keys(sort).length > 0) {
-  //       if (sort.productName) {
-  //         productsQuery = productsQuery.collation({
-  //           locale: 'en',
-  //           strength: 2,
-  //         });
-  //       }
-  //       productsQuery = productsQuery.sort(sort);
-  //     }
-
-  //     const products = await productsQuery.skip(skip).limit(take);
-
-  //     if (!products.length) return [];
-
-  //     const updatedProducts = await Promise.all(
-  //       products.map(async (pr) => {
-  //         const url = await this.s3Service.getPresignedUrl(pr.filePath);
-  //         return {
-  //           productName: pr.productName,
-  //           category: pr.category,
-  //           pages: pr.pages,
-  //           components: pr.components,
-  //           new: pr.new,
-  //           discount: pr.discount,
-  //           rate: pr.rate,
-  //           price: pr.price,
-  //           colors: pr.colors,
-  //           reviews: pr.reviews,
-  //           questions: pr.questions,
-  //           stock: pr.stock,
-  //           wishlist: pr.wishlist,
-  //           measurements: pr.measurements,
-  //           details: pr.details,
-  //           discountTill: pr.discountTill,
-  //           presignedUrl: url,
-  //           _id: pr._id,
-  //         };
-  //       }),
-  //     );
-
-  //     return {
-  //       data: updatedProducts,
-  //       productsDataLength: allFilteredProducts.length,
-  //       totalProductsLength: allProducts.length,
-  //     };
-  //   } catch (e) {
-  //     console.log(e);
-  //     throw e;
-  //   }
-  // }
-
-
-async findAllByQueryParams(queryParams: QueryParamsDto) {
-  const query: any = {};
-  let sort: Record<string, 1 | -1> = {};
-  const sortValue = queryParams.sortBy?.toLowerCase();
-
-  switch (sortValue) {
-    case 'latest':
-      sort = { createdAt: -1, _id: -1 };
-      break;
-    case 'oldest':
-      sort = { createdAt: 1, _id: 1 };
-      break;
-    case 'a to z':
-    case 'a-z':
-      sort = { productName: 1, _id: 1 };
-      break;
-    case 'z to a':
-    case 'z-a':
-      sort = { productName: -1, _id: -1 };
-      break;
-    case 'highest':
-      sort = { price: -1, _id: -1 };
-      break;
-    case 'lowest':
-      sort = { price: 1, _id: 1 };
-      break;
-    default:
-      sort = { _id: 1 };
-      break;
-  }
-
-  if (queryParams.category) {
-    query.category = { $in: [queryParams.category.toLowerCase()] };
-  }
-
-  if (queryParams.priceRange) {
-    const [min, max] = queryParams.priceRange.split('-').map(Number);
-    if (max) {
-      query.price = { $gte: min, $lte: max };
-    } else {
-      query.price = { $gte: min };
-    }
-  }
-
-  try {
-    const { take = 12, page = 1 } = queryParams;
-    if (page <= 0 || take <= 0 || take >= 100) {
-      throw new BadRequestException('Invalid pagination parameters');
+    switch (sortValue) {
+      case 'latest':
+        sort = { createdAt: -1, _id: -1 };
+        break;
+      case 'oldest':
+        sort = { createdAt: 1, _id: 1 };
+        break;
+      case 'a to z':
+      case 'a-z':
+        sort = { productName: 1, _id: 1 };
+        break;
+      case 'z to a':
+      case 'z-a':
+        sort = { productName: -1, _id: -1 };
+        break;
+      case 'highest':
+        sort = { price: -1, _id: -1 };
+        break;
+      case 'lowest':
+        sort = { price: 1, _id: 1 };
+        break;
+      default:
+        sort = { _id: 1 };
+        break;
     }
 
-    const skip = (page - 1) * take;
-    
-    // Count queries (no sorting needed for counts)
-    const allProducts = await this.productService.find();
-    const allFilteredProducts = await this.productService.find(query);
-
-    // Build the main query with sorting BEFORE executing
-    let productsQuery = this.productService.find(query);
-
-    if (sort.productName) {
-      productsQuery = productsQuery.collation({
-        locale: 'en',
-        strength: 2,
-      });
+    if (queryParams.category) {
+      query.category = { $in: [queryParams.category.toLowerCase()] };
     }
-    
-    productsQuery = productsQuery.sort(sort);
 
-    // Apply pagination and execute
-    const products = await productsQuery.skip(skip).limit(take).exec();
+    if (queryParams.priceRange) {
+      const [min, max] = queryParams.priceRange.split('-').map(Number);
+      if (max) {
+        query.price = { $gte: min, $lte: max };
+      } else {
+        query.price = { $gte: min };
+      }
+    }
 
-    if (!products.length) {
+    try {
+      const { take = 12, page = 1 } = queryParams;
+      if (page <= 0 || take <= 0 || take >= 100) {
+        throw new BadRequestException('Invalid pagination parameters');
+      }
+
+      const skip = (page - 1) * take;
+      const allProducts = await this.productService.find();
+      const allFilteredProducts = await this.productService.find(query);
+      let productsQuery = this.productService.find(query);
+
+      if (sort.productName) {
+        productsQuery = productsQuery.collation({
+          locale: 'en',
+          strength: 2,
+        });
+      }
+
+      productsQuery = productsQuery.sort(sort);
+      const products = await productsQuery.skip(skip).limit(take).exec();
+
+      if (!products.length) {
+        return {
+          data: [],
+          productsDataLength: allFilteredProducts.length,
+          totalProductsLength: allProducts.length,
+        };
+      }
+
+      const updatedProducts = await Promise.all(
+        products.map(async (pr) => {
+          const url = await this.s3Service.getPresignedUrl(pr.filePath);
+          return {
+            productName: pr.productName,
+            category: pr.category,
+            pages: pr.pages,
+            components: pr.components,
+            new: pr.new,
+            discount: pr.discount,
+            rate: pr.rate,
+            price: pr.price,
+            colors: pr.colors,
+            reviews: pr.reviews,
+            questions: pr.questions,
+            stock: pr.stock,
+            wishlist: pr.wishlist,
+            measurements: pr.measurements,
+            details: pr.details,
+            discountTill: pr.discountTill,
+            presignedUrl: url,
+            _id: pr._id,
+          };
+        }),
+      );
+
       return {
-        data: [],
+        data: updatedProducts,
         productsDataLength: allFilteredProducts.length,
         totalProductsLength: allProducts.length,
       };
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
-
-    const updatedProducts = await Promise.all(
-      products.map(async (pr) => {
-        const url = await this.s3Service.getPresignedUrl(pr.filePath);
-        return {
-          productName: pr.productName,
-          category: pr.category,
-          pages: pr.pages,
-          components: pr.components,
-          new: pr.new,
-          discount: pr.discount,
-          rate: pr.rate,
-          price: pr.price,
-          colors: pr.colors,
-          reviews: pr.reviews,
-          questions: pr.questions,
-          stock: pr.stock,
-          wishlist: pr.wishlist,
-          measurements: pr.measurements,
-          details: pr.details,
-          discountTill: pr.discountTill,
-          presignedUrl: url,
-          _id: pr._id,
-        };
-      }),
-    );
-
-    return {
-      data: updatedProducts,
-      productsDataLength: allFilteredProducts.length,
-      totalProductsLength: allProducts.length,
-    };
-  } catch (e) {
-    console.log(e);
-    throw e;
   }
-}
-
-
-
-
-
-
-
 
   async findById(id: Types.ObjectId | string) {
     try {
@@ -418,9 +297,5 @@ async findAllByQueryParams(queryParams: QueryParamsDto) {
       { stock: newStock },
       { new: true },
     );
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} product`;
   }
 }

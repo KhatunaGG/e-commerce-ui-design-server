@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   UseGuards,
   UseInterceptors,
   Req,
@@ -19,7 +18,6 @@ import { UpdateBlogDto } from './dto/update-blog.dto';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CreateBlogDto } from './dto/create-blog.dto';
-import { QueryParamsDto } from 'src/product/dto/query-params.dto';
 
 @Controller('blog')
 export class BlogController {
@@ -47,26 +45,6 @@ export class BlogController {
   findAll(@Query() queryParam: { page: string; take: string; sort: String }) {
     return this.blogService.findAll(queryParam);
   }
-
-  // @Post('upload-many')
-  // @UseGuards(AuthGuard)
-  // @UseInterceptors(FilesInterceptor('files'))
-  // async uploadMany(@UploadedFiles() files: Express.Multer.File[], @Req() req) {
-  //   const path = Math.random().toString().slice(2);
-  //   const fileForUpload = files.map((file, index) => ({
-  //     filePath: `e-commerce-ui-design/${path}`,
-  //     file: file.buffer,
-  //   }));
-
-  //   const uploadedPaths = await this.blogService.uploadManyFiles(
-  //     req.userId,
-  //     fileForUpload,
-  //   );
-  //   return {
-  //     message: 'Files uploaded successfully',
-  //     uploadedPaths,
-  //   };
-  // }
 
   @Post('upload-many')
   @UseGuards(AuthGuard)
@@ -97,26 +75,13 @@ export class BlogController {
     return this.blogService.update(req.userId, blogId, updateBlogDto);
   }
 
-
   @Get('/get-for-articles')
   fetchForArticle() {
     return this.blogService.fetchForArticle();
   }
 
-// @Get('/get-for-articles')
-// fetchForArticle(@Query('excludeBlogId') excludeBlogId?: string) {
-//   return this.blogService.fetchForArticle(excludeBlogId);
-// }
-
-
-
-
-
-
   @Get(':blogId')
   getBlogById(@Param('blogId') blogId: string) {
     return this.blogService.getBlogById(blogId);
   }
-
-
 }

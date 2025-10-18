@@ -1,13 +1,8 @@
-import {
-  BadGatewayException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schema/user.schema';
-// import { Model, Types } from 'mongoose';
-import mongoose, { Model, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 @Injectable()
 export class UserService {
@@ -21,7 +16,6 @@ export class UserService {
   }
 
   async findUserAndUpdate(id: Types.ObjectId | string, newPurchase) {
-    ///for update
     try {
       const updatedUser = await this.userModel.findByIdAndUpdate(
         id,
@@ -34,25 +28,6 @@ export class UserService {
       throw e;
     }
   }
-
-  // async updateUsersAccount(userId, updateAuthDto) {
-  //   try {
-  //     const user = await this.userModel.findById(userId);
-
-  //     if (!user) {
-  //       throw new NotFoundException('User not found');
-  //     }
-  //     const updatedUser = await this.userModel
-  //       .findByIdAndUpdate(user._id, updateAuthDto, { new: true })
-  //       .select('-password');
-  //       console.log(updatedUser, "updatedUser from USER")
-
-  //     return updatedUser;
-  //   } catch (e) {
-  //     console.log(e);
-  //     throw e;
-  //   }
-  // }
 
   async updateUsersAccount(userId, updateAuthDto) {
     try {
@@ -116,16 +91,4 @@ export class UserService {
       throw e;
     }
   }
-
-  // findAll() {
-  //   return `This action returns all user`;
-  // }
-
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
 }

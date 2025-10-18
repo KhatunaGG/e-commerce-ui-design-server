@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -42,14 +41,4 @@ export class AddressController {
   ) {
     return this.addressService.update(req.userId, id, updateAddressDto);
   }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.addressService.findOne(+id);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.addressService.remove(+id);
-  // }
 }

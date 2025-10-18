@@ -9,7 +9,7 @@ import { UserModule } from 'src/user/user.module';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Review.name, schema: ReviewSchema }]),
-      UserModule
+    UserModule,
   ],
   controllers: [ReviewController],
   providers: [ReviewService],

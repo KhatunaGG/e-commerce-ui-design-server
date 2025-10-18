@@ -21,8 +21,6 @@ export class User {
   ])
   orders: mongoose.Schema.Types.ObjectId[];
 
-  // @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Review', default: [] }])
-  // reviews: mongoose.Schema.Types.ObjectId[];
   @Prop({ type: [Types.ObjectId], ref: 'Review', default: [] })
   reviews: Types.ObjectId[];
 
@@ -33,9 +31,6 @@ export class User {
   })
   role: Role;
 
-  // @Prop({ type: String, enum: Role, default: Role.USER })
-  // role: string;
-
   @Prop()
   isTerms: boolean;
 
@@ -45,17 +40,6 @@ export class User {
   @Prop({ type: String })
   filePath: string;
 
-
-
-
-
-
-
-
-
-
-
-  
   @Prop([{ type: [Types.ObjectId], ref: 'Question', default: [] }])
   questions: Types.ObjectId[];
 }

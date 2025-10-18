@@ -13,7 +13,6 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-// import { UpdateAuthDto } from './dto/update-auth.dto';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { AuthGuard } from './guard/auth.guard';
@@ -86,19 +85,4 @@ export class AuthController {
       message,
     );
   }
-
-  // @Get()
-  // findAll() {
-  //   return this.authService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.authService.findOne(+id);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.authService.remove(+id);
-  // }
 }

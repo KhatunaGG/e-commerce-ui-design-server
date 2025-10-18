@@ -1,11 +1,5 @@
 import { Transform } from 'class-transformer';
-import {
-  IsBoolean,
-  IsIn,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsIn, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class QueryParamsDto {
   @Transform(({ value }) => Number(value) || 1)

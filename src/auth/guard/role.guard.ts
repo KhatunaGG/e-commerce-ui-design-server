@@ -15,7 +15,6 @@ export class RoleGuard implements CanActivate {
       const token = this.getToken(req.headers);
       if (!token) throw new UnauthorizedException();
       const payload = await this.jwtService.verifyAsync(token);
-      // req.userId = payload.sub;
       req.role = payload.role;
 
       return true;

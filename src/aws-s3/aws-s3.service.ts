@@ -49,36 +49,6 @@ export class AwsS3Service {
     }
   }
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   async getImageById(fileId: string) {
     try {
       if (!fileId) throw new NotFoundException('Not found');
@@ -137,8 +107,6 @@ export class AwsS3Service {
     }
   }
 
-
-  
   // async uploadFiles(
   //   files: { filePath: string; file: Buffer }[],
   // ): Promise<string[]> {
@@ -167,5 +135,4 @@ export class AwsS3Service {
   //     throw new BadRequestException('Could not upload one or more files');
   //   }
   // }
-
 }

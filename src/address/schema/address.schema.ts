@@ -29,7 +29,6 @@ export class Address {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   addressOwnerId: mongoose.Schema.Types.ObjectId;
-
 }
 
 export const AddressSchema = SchemaFactory.createForClass(Address);

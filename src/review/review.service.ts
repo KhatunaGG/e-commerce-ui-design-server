@@ -284,12 +284,4 @@ export class ReviewService {
       throw e;
     }
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} review`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} review`;
-  }
 }

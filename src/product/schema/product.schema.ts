@@ -9,11 +9,9 @@ export class Product {
   @Prop()
   filePath: string;
 
-  //   @Prop({ type: Array, default: [] })
   @Prop({ type: [String], default: [] })
   pages: string[];
 
-  //   @Prop({ type: Array, default: [] })
   @Prop({ type: [String], default: [] })
   components?: string[];
 
@@ -28,14 +26,12 @@ export class Product {
 
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Review', default: [] }])
   reviews: mongoose.Schema.Types.ObjectId[];
-  // reviews: Types.ObjectId[];
 
   @Prop([
     { type: mongoose.Schema.Types.ObjectId, ref: 'Question', default: [] },
   ])
   questions?: string[];
 
-  //   @Prop({ type: Array, default: [] })
   @Prop({ type: [String], default: [] })
   category: string[];
 

@@ -11,7 +11,6 @@ import * as bcrypt from 'bcrypt';
 import { SignInDto } from './dto/sign-in.dto';
 import { Types } from 'mongoose';
 import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
-import { toArray } from 'rxjs';
 import { EmailSenderService } from 'src/email-sender/email-sender.service';
 
 @Injectable()
@@ -116,7 +115,6 @@ export class AuthService {
   async updateUsersAccount(userId: string, updateUserDto: any) {
     if (!userId) throw new UnauthorizedException();
     try {
-      // const user = await this.usersService.getById(userId);
       const user = await this.usersService.findUserById(userId);
 
       if (!user) throw new NotFoundException('User not found');
@@ -215,7 +213,6 @@ export class AuthService {
       const filePath = user.filePath;
       try {
         const image = await this.awsS3Service.getImageById(filePath);
-        // console.log('image-avatar:', image?.substring(0, 50));
         return { avatar: image };
       } catch (e) {
         if (
@@ -242,12 +239,17 @@ export class AuthService {
       throw new UnauthorizedException('User ID is required');
     }
     try {
-
       if (!fullName || !yourEmail || !message) {
         throw new BadRequestException('Missing required fields');
       }
-      const mailSender =await this.usersService.findUserById(userId)
-      return await this.emailService.sendEmail( yourEmail, message, mailSender.yourName, mailSender.lastName, mailSender.email );
+      const mailSender = await this.usersService.findUserById(userId);
+      return await this.emailService.sendEmail(
+        yourEmail,
+        message,
+        mailSender.yourName,
+        mailSender.lastName,
+        mailSender.email,
+      );
     } catch (e) {
       console.log(e);
       throw e;

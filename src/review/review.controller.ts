@@ -40,16 +40,6 @@ export class ReviewController {
     return this.reviewService.updateReviewWithReplay(req.userId, id, replyDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reviewService.findOne(+id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reviewService.remove(+id);
-  }
-
   @Patch('/update-rate/:reviewId')
   @UseGuards(AuthGuard)
   updateRate(

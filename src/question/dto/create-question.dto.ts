@@ -5,23 +5,11 @@ export class AnswerDto {
   @IsString()
   answersOwnerId: string;
 
-  // @IsString()
-  // answerToQuestionsOwnerId: string;
-
   @IsString()
   answerText: string;
 
   @IsString()
   status: string;
-
-
-
-
-
-
-
-
-
 
   @IsOptional()
   @IsString()

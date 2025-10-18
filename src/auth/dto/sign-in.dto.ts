@@ -1,21 +1,3 @@
-// import { Transform } from 'class-transformer';
-// import { IsNotEmpty, IsString } from 'class-validator';
-
-// export class SignInDto {
-//   @IsNotEmpty()
-//   @IsString()
-//   userName: string;
-
-//   @IsNotEmpty()
-//   @IsString()
-//   @Transform(({ value }) => value.toLowerCase())
-//   email: string;
-
-//   @IsNotEmpty()
-//   @IsString()
-//   password: string;
-// }
-
 import { Transform } from 'class-transformer';
 import {
   IsBoolean,
@@ -26,12 +8,12 @@ import {
 } from 'class-validator';
 
 export class SignInDto {
-  @ValidateIf((o) => !o.email) // Only validate if email is not provided
+  @ValidateIf((o) => !o.email)
   @IsNotEmpty()
   @IsString()
   userName?: string;
 
-  @ValidateIf((o) => !o.userName) // Only validate if userName is not provided
+  @ValidateIf((o) => !o.userName)
   @IsNotEmpty()
   @IsString()
   @Transform(({ value }) => value?.toLowerCase())

@@ -54,20 +54,4 @@ export class UtilitiesService {
       throw e;
     }
   }
-
-  // findAll() {
-  //   return `This action returns all utilities`;
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} utility`;
-  // }
-
-  // update(id: number, updateUtilityDto: UpdateUtilityDto) {
-  //   return `This action updates a #${id} utility`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} utility`;
-  // }
 }

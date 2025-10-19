@@ -9,7 +9,6 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './product/product.module';
 import { PurchaseModule } from './purchase/purchase.module';
-import { PaymentModule } from './payment/payment.module';
 import { AddressModule } from './address/address.module';
 import { ReviewModule } from './review/review.module';
 import { QuestionModule } from './question/question.module';
@@ -53,7 +52,6 @@ import { join } from 'path';
     AuthModule,
     ProductModule,
     PurchaseModule,
-    PaymentModule,
     AddressModule,
     ReviewModule,
     QuestionModule,
